@@ -2,5 +2,3 @@
 
 Project updates will be posted every week
 
-
-##AA
