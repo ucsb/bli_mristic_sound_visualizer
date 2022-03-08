@@ -22,6 +22,30 @@ void SPI2_GPIO_Init(void) {
 	GPIOB->AFR[1] |= GPIO_AFRH_AFSEL15_0 | GPIO_AFRH_AFSEL15_2; //SPI2_MOSI (all are AF5)
 }
 
+void SPI3_Init(void){
+	// TODO: initialize SPI1 peripheral
+	RCC->APB1ENR1 |= RCC_APB1ENR1_SPI3EN; //SPI2 enabled
+	RCC->APB1RSTR1 |= RCC_APB1RSTR1_SPI3RST;
+	RCC->APB1RSTR1 &= ~(RCC_APB1RSTR1_SPI3RST); //set and reset to clear peripheral
+	SPI3->CR1 &= ~(SPI_CR1_SPE); //SPI disable
+	SPI3->CR1 &= ~(SPI_CR1_RXONLY);//full duplex
+	SPI3->CR1 &= ~(SPI_CR1_BIDIMODE); //2-line unidirectional
+	SPI3->CR1 &= ~(SPI_CR1_BIDIOE); //disabling output in bidirectioal mode
+	SPI3->CR1 &= ~(SPI_CR1_LSBFIRST); // MSB first
+	SPI3->CR2 |= SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2; //8-bit frame
+	SPI3->CR2 &= ~(SPI_CR2_FRF); //motorola mode baby
+	SPI3->CR1 &= ~(SPI_CR1_CPOL); // clock low polarity
+	SPI3->CR1 &= ~(SPI_CR1_CPHA); //first clock phase is capture
+	SPI3->CR1 &= ~(SPI_CR1_BR);
+	SPI3->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1; //Baud rate = f/16 (011)
+	SPI3->CR1 &= ~(SPI_CR1_CRCEN); //hardware CRC disabled
+	SPI3->CR1 |= (SPI_CR1_MSTR); //master mode
+	SPI3->CR1 |= (SPI_CR1_SSM); //enabling SSM
+	SPI3->CR2 |= SPI_CR2_NSSP; //enabling NSS pulse gen
+	SPI3->CR2 |= SPI_CR2_FRXTH; //setting FIFO to 1/4
+	SPI3->CR1 |= SPI_CR1_SPE; //SPI enable
+}
+
 void SPI2_Init(void){
 	// TODO: initialize SPI2 peripheral
 	RCC->APB1ENR1 |= RCC_APB1ENR1_SPI2EN; //SPI2 enabled
