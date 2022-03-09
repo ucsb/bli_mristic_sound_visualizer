@@ -25,12 +25,12 @@ void SPI2_GPIO_Init(void) {
 void SPI2_Init(void){
 	// TODO: initialize SPI2 peripheral
 	RCC->APB1ENR1 |= RCC_APB1ENR1_SPI2EN; //SPI2 enabled
-	RCC->APB1RSTR1 |= RCC_APB1RSTR1_SPI2RST;
+	RCC->APB1RSTR1 |= RCC_APB1RSTR1_SPI2RST; 
 	RCC->APB1RSTR1 &= ~(RCC_APB1RSTR1_SPI2RST); //set and reset to clear peripheral
 	SPI2->CR1 &= ~(SPI_CR1_SPE); //SPI disable
 	SPI2->CR1 &= ~(SPI_CR1_RXONLY);//full duplex
 	SPI2->CR1 &= ~(SPI_CR1_BIDIMODE); //2-line unidirectional
-	SPI2->CR1 &= ~(SPI_CR1_BIDIOE); //disabling output in bidirectioal mode
+	SPI2->CR1 &= ~(SPI_CR1_BIDIOE); //disabling output in bidirectioal mode (RECEIVE ONLY MODE)
 	SPI2->CR1 &= ~(SPI_CR1_LSBFIRST); // MSB first
 	SPI2->CR2 |= SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2; //8-bit frame
 	SPI2->CR2 &= ~(SPI_CR2_FRF); //motorola mode baby
@@ -39,7 +39,7 @@ void SPI2_Init(void){
 	SPI2->CR1 &= ~(SPI_CR1_BR);
 	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1; //Baud rate = f/16 (011)
 	SPI2->CR1 &= ~(SPI_CR1_CRCEN); //hardware CRC disabled
-	SPI2->CR1 |= (SPI_CR1_MSTR); //master mode
+	SPI2->CR1 |= (SPI_CR1_MSTR); //MASTER mode
 	SPI2->CR1 |= (SPI_CR1_SSM); //enabling SSM
 	SPI2->CR2 |= SPI_CR2_NSSP; //enabling NSS pulse gen
 	SPI2->CR2 |= SPI_CR2_FRXTH; //setting FIFO to 1/4
