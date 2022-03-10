@@ -18,10 +18,11 @@ int main(void) {
 	SPI2_GPIO_Init();
 	SPI2_Init();
 	int i;
-    int mag = 0;
+    int mag;
     //Note that the microphone's L/R pin should be connected to Vdd (3.3v)
 	while(1) { //sampling wave mag from mic]
         SPI_Receive_Waveform(SPI2, &receive);
+	mag = 0;
         //decode receive to get magnitude value.
         for(int i = 0; i < 16; i++){
             mag += receive%2;
