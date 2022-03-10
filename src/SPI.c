@@ -32,17 +32,16 @@ void SPI2_Init(void){
 	SPI2->CR1 &= ~(SPI_CR1_BIDIMODE); //2-line unidirectional
 	SPI2->CR1 &= ~(SPI_CR1_BIDIOE); //disabling output in bidirectioal mode (RECEIVE ONLY MODE)
 	SPI2->CR1 &= ~(SPI_CR1_LSBFIRST); // MSB first
-	SPI2->CR2 |= SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2; //8-bit frame
+	SPI2->CR2 |= SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2 | SPI_CR2_DS_3; //16-bit frame
 	SPI2->CR2 &= ~(SPI_CR2_FRF); //motorola mode baby
 	SPI2->CR1 &= ~(SPI_CR1_CPOL); // clock low polarity
 	SPI2->CR1 &= ~(SPI_CR1_CPHA); //first clock phase is capture
-	SPI2->CR1 &= ~(SPI_CR1_BR);
-	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1; //Baud rate = f/16 (011)
+	SPI2->CR1 &= ~(SPI_CR1_BR); //Baud rate = f/2 [000] 2MHz
 	SPI2->CR1 &= ~(SPI_CR1_CRCEN); //hardware CRC disabled
 	SPI2->CR1 |= (SPI_CR1_MSTR); //MASTER mode
 	SPI2->CR1 |= (SPI_CR1_SSM); //enabling SSM
 	SPI2->CR2 |= SPI_CR2_NSSP; //enabling NSS pulse gen
-	SPI2->CR2 |= SPI_CR2_FRXTH; //setting FIFO to 1/4
+	SPI2->CR2 &= ~(SPI_CR2_FRXTH); //setting FIFO to 1/2
 	SPI2->CR1 |= SPI_CR1_SPE; //SPI enable
 }
  
