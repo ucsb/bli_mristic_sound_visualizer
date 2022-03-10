@@ -5,6 +5,6 @@
 
 void SPI2_GPIO_Init(void);
 void SPI2_Init(void);
-void SPI_Transfer_Byte(SPI_TypeDef* SPIx, uint8_t write_data, uint8_t* read_data);
+void SPI_Receive_Waveform(SPI_TypeDef *SPIx, uint16_t* read_data);
 
 #endif 
