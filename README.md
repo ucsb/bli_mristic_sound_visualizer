@@ -15,3 +15,7 @@ We also made sure that we would be able to interface with our components. The LE
 ##  Week 2
 
 This week we went about structuring our code based off the block diagram of our project. We implemented a lot of the UART and SPI pin and clock initializations, as well as made a barebones main.c file. Additionally, the parts for our lab came in this week, so next week we will go about soldering all our parts together and physically building our project, as well as begining to handle interefacing with our peripherals within our code.
+
+##  Week 3
+
+This week we implemented interfacing with our microphone using SPI protocol. This was done through the use of a function to receive the 16-bit PDM value from our microphone, which we then converted to a corresponding magnitude (within [0,8]) for our 8x32 LED Board. Additionally, we implemented communication with our Wii Nunchuck using I2C protocol, enabling us to now receive control instructions to change the color and brightness of the LED's on the board.
