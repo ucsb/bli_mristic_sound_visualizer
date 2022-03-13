@@ -89,8 +89,8 @@ void USART_Init(USART_TypeDef* USARTx) {
 	//stop bits to 1
 	USARTx->CR2 &= ~USART_CR2_STOP;
 
-	//baud rate to 9600 (USARTDIV = 80MHz/9600 = 8333 (0x208D))
-	USARTx->BRR |= 0x208D;
+	//baud rate to 9600 (USARTDIV = 4MHz/9600 = 416 (0x1A0))
+	USARTx->BRR |= 0x1A0;
 
 	//enable transmitter and receiver
 	USARTx->CR1 |= USART_CR1_TE | USART_CR1_RE;

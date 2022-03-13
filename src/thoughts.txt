@@ -1,0 +1,5 @@
+once we get the data:
+take input from nunchuck
+up is increase brightness, down is decrease brightness
+z button is for changing color schemes, to be the easiest, lets just do RGB
+each time step, the 

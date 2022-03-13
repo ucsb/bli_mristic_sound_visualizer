@@ -12,10 +12,11 @@ int8_t I2C_Start(I2C_TypeDef * I2Cx, uint32_t DevAddress, uint8_t Size, uint8_t 
 void I2C_Stop(I2C_TypeDef * I2Cx);
 void I2C_WaitLineIdle(I2C_TypeDef * I2Cx);
 int8_t I2C_SendData(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, uint8_t *pData, uint8_t Size);
-int8_t I2C_SendNunchukInit(I2C_TypeDef * I2Cx, uint8_t DeviceAddress);
 int8_t I2C_ReceiveData(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, uint8_t *pData, uint8_t Size);
 void I2C_GPIO_Init(void);
 void I2C_Initialization(void);
 void CODEC_Initialization(void);
+
+int8_t I2C_NunchuckInit(I2C_TypeDef * I2Cx, uint8_t DeviceAddress);
 
 #endif

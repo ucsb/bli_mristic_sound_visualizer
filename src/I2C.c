@@ -26,11 +26,11 @@ void I2C_GPIO_Init(void) {
 	GPIOB->MODER &= ~GPIO_MODER_MODE7;	
 	GPIOB->MODER |= GPIO_MODER_MODE7_1;
 	
-	//use alternate functions for PB6, PB7 (AF4) for USART2
+	//use alternate functions for PB6, PB7 (AF4) for I2C1
 	GPIOB->AFR[0] |= GPIO_AFRL_AFSEL6_2;
 	GPIOB->AFR[0] |= GPIO_AFRL_AFSEL7_2;
 
-	//set speeds to very high
+	//set speeds to low speed
 	GPIOB->OSPEEDR |= GPIO_OSPEEDR_OSPEED6 | GPIO_OSPEEDR_OSPEED7;
 
 	//set to open drain output type
@@ -51,15 +51,16 @@ void I2C_GPIO_Init(void) {
 //                          I2C Initialization
 //===============================================================================
 void I2C_Initialization(void){
-	uint32_t OwnAddr = 0x50;
+	uint32_t OwnAddr = 0x48;
 	
 	// [TODO]
 
 	//enable I2C1 clk
 	RCC->APB1ENR1 |= RCC_APB1ENR1_I2C1EN;
 
-	//select system clk as I2C1 clk source (01)
-	RCC->CCIPR |= RCC_CCIPR_I2C1SEL_0;
+	//select PCLK as I2C1 clk source (00)
+	RCC->CCIPR &= ~RCC_CCIPR_I2C1SEL;
+	//RCC->CCIPR |= RCC_CCIPR_I2C1SEL_0;
 
 	//reset I2C1
 	RCC->APB1RSTR1 |= RCC_APB1RSTR1_I2C1RST;
@@ -96,11 +97,11 @@ void I2C_Initialization(void){
 	I2C1->TIMINGR &= ~I2C_TIMINGR_SCLL;
 
 	//set timing
-	I2C1->TIMINGR |= (150<< I2C_TIMINGR_PRESC_POS);   //PRESC set to 7, period tPRESC is 0.1us
+	I2C1->TIMINGR |= (7 << I2C_TIMINGR_PRESC_POS);   //PRESC set to 4, period tPRESC is 0.1us
 	I2C1->TIMINGR |= (15 << I2C_TIMINGR_SCLDEL_POS);  //SCLDEL set to 10, originally
 	I2C1->TIMINGR |= (15 << I2C_TIMINGR_SDADEL_POS);  //SDADEL set to 12, originally
-	I2C1->TIMINGR |= (49 << I2C_TIMINGR_SCLH_POS);    //SCLH set to 39  , originally
-	I2C1->TIMINGR |= (49 << I2C_TIMINGR_SCLL_POS);    //SCLL set to 46  , originally
+	I2C1->TIMINGR |= (255 << I2C_TIMINGR_SCLH_POS);    //SCLH set to 39  , originally
+	I2C1->TIMINGR |= (255 << I2C_TIMINGR_SCLL_POS);    //SCLL set to 46  , originally
 
 	//set own addr
 	I2C1->OAR1 &= ~(I2C_OAR1_OA1EN);
@@ -171,14 +172,14 @@ void I2C_WaitLineIdle(I2C_TypeDef * I2Cx){
 //                           I2C Send Data
 //=============================================================================== 
 int8_t I2C_SendData(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, uint8_t *pData, uint8_t Size) {
-	int i;
+	int i,j;
 	
 	if (Size <= 0 || pData == NULL) return -1;
-	
+	printf("foo1\n");
 	I2C_WaitLineIdle(I2Cx);
 	
 	if (I2C_Start(I2Cx, DeviceAddress, Size, WRITE_TO_SLAVE) < 0 ) return -1;
-	
+	printf("foo2\n");
 	// Send Data
 	// Write the first data in DR register
 	// while((I2Cx->ISR & I2C_ISR_TXE) == 0);
@@ -194,52 +195,38 @@ int8_t I2C_SendData(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, uint8_t *pData, u
 		// sent is written in the I2C_TXDR register.
 		// The TXIS flag is not set when a NACK is received.
 		while((I2Cx->ISR & I2C_ISR_TXIS) == 0 );
+		printf("(I2Cx->ISR & I2C_ISR_TXIS) %i %x\n", (I2Cx->ISR & I2C_ISR_TXIS),I2Cx->ISR);
 		I2Cx->TXDR = pData[i] & I2C_TXDR_TXDATA;  // TXE is cleared by writing to the TXDR register.
+		for(j = 0; j < 500000; j++);
+		printf("pData[%i] = %i\n", i, pData[i]);
 	}
-	
-	// Wait until TC flag is set 
+	for(j = 0; j < 500000; j++);
+	//Wait until TC flag is set 
 	while((I2Cx->ISR & I2C_ISR_TC) == 0 && (I2Cx->ISR & I2C_ISR_NACKF) == 0);
-	
+	printf("hi\n");
+	for(j = 0; i < 500000; i++);
 	if( (I2Cx->ISR & I2C_ISR_NACKF) != 0 ) return -1;
-
+	printf("foo3\n");
 	I2C_Stop(I2Cx);
 	return 0;
+
 }
 
-int8_t I2C_SendNunchukInit(I2C_TypeDef * I2Cx, uint8_t DeviceAddress) {
-	int i;
-	
-	if (Size <= 0 || pData == NULL) return -1;
-	
-	I2C_WaitLineIdle(I2Cx);
-	
-	if (I2C_Start(I2Cx, DeviceAddress, Size, WRITE_TO_SLAVE) < 0 ) return -1;
-	
-	// Send Data
-	// Write the first data in DR register
-	// while((I2Cx->ISR & I2C_ISR_TXE) == 0);
-	// I2Cx->TXDR = pData[0] & I2C_TXDR_TXDATA;  
-	uint8_t command = 0x40;
-	uint8_t data = 0x00;
-	for (i = 0; i < sizeof(); i++) {
-		// TXE is set by hardware when the I2C_TXDR register is empty. It is cleared when the next
-		// data to be sent is written in the I2C_TXDR register.
-		// while( (I2Cx->ISR & I2C_ISR_TXE) == 0 ); 
+int8_t I2C_NunchuckInit(I2C_TypeDef * I2Cx, uint8_t DeviceAddress) {
+	uint8_t initData[2];
+	initData[0] = 0x40;
+	initData[1] = 0x00;
 
-		// TXIS bit is set by hardware when the I2C_TXDR register is empty and the data to be
-		// transmitted must be written in the I2C_TXDR register. It is cleared when the next data to be
-		// sent is written in the I2C_TXDR register.
-		// The TXIS flag is not set when a NACK is received.
-		while((I2Cx->ISR & I2C_ISR_TXIS) == 0 );
-		I2Cx->TXDR = pData[i] & I2C_TXDR_TXDATA;  // TXE is cleared by writing to the TXDR register.
-	}
-	
-	// Wait until TC flag is set 
-	while((I2Cx->ISR & I2C_ISR_TC) == 0 && (I2Cx->ISR & I2C_ISR_NACKF) == 0);
-	
-	if( (I2Cx->ISR & I2C_ISR_NACKF) != 0 ) return -1;
+	uint8_t convData;
+	convData = 0x00;
 
-	I2C_Stop(I2Cx);
+	uint8_t* p1 = initData;
+	int8_t send_error;
+	send_error = I2C_SendData(I2Cx, DeviceAddress, p1, sizeof(initData));
+	if(send_error != 0) return -1;
+	send_error = I2C_SendData(I2Cx, DeviceAddress, &convData, sizeof(convData));
+	if(send_error != 0) return -2;
+	
 	return 0;
 }
 
@@ -249,17 +236,18 @@ int8_t I2C_SendNunchukInit(I2C_TypeDef * I2Cx, uint8_t DeviceAddress) {
 //=============================================================================== 
 int8_t I2C_ReceiveData(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, uint8_t *pData, uint8_t Size) {
 	int i;
-	
+	printf("rfoo1\n");
 	if(Size <= 0 || pData == NULL) return -1;
 
 	I2C_WaitLineIdle(I2Cx);
-
+	printf("rfoo2\n");
 	I2C_Start(I2Cx, DeviceAddress, Size, READ_FROM_SLAVE); // 0 = sending data to the slave, 1 = receiving data from the slave
-						  	
+	printf("rfoo3\n");					  	
 	for (i = 0; i < Size; i++) {
 		// Wait until RXNE flag is set 	
 		while( (I2Cx->ISR & I2C_ISR_RXNE) == 0 );
 		pData[i] = I2Cx->RXDR & I2C_RXDR_RXDATA;
+		printf("pData[%i] = %i\n", i, pData[i]);
 	}
 	
 	// Wait until TCR flag is set 
