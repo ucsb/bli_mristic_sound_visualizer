@@ -8,9 +8,11 @@
 #include <stdio.h>
 
 #define SPI_MASTER SPI2
+#define SPI_MASTER SPI1
 #define SPI_SLAVE SPI3 //not needed
 
 uint16_t receive = 0;
+int *a; //a maintains the LED height 
 
 int main(void) {
     System_Clock_Init();   // System Clock = 4MHz
@@ -24,11 +26,15 @@ int main(void) {
         SPI_Receive_Waveform(SPI2, &receive);
         //decode receive to get magnitude value.
         mag = 0;
-        for(int i = 0; i < 16; i++){
+        for(i = 0; i < 16; i++){
             mag += receive%2;
             receive = receive/2;
         }
         mag = mag/2;
+        for(i = 1; i < 32; i++){
+            *(a + i) = *(a);
+        }
+        *(a) = mag;
         //mag should now be equal to a value E [0,8]
         //we can have 0 not be displayed on the LED (lowest possible val), and 1-8 correspond to height of max LED
 	}
