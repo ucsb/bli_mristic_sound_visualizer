@@ -30,9 +30,9 @@ void SPI1_GPIO_Init(void) {
 
 	GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD5 | GPIO_PUPDR_PUPD6 | GPIO_PUPDR_PUPD7); //no pull-up, no pull-down
 	
-	GPIOB->AFR[1] |= GPIO_AFRH_AFSEL5_0 | GPIO_AFRH_AFSEL5_2; //SPI1_SCK 
-	GPIOB->AFR[1] |= GPIO_AFRH_AFSEL6_0 | GPIO_AFRH_AFSEL6_2; //SPI1_MISO
-	GPIOB->AFR[1] |= GPIO_AFRH_AFSEL7_0 | GPIO_AFRH_AFSEL7_2; //SPI1_MOSI (all are AF5)
+	GPIOB->AFR[0] |= GPIO_AFRH_AFSEL5_0 | GPIO_AFRH_AFSEL5_2; //SPI1_SCK 
+	GPIOB->AFR[0] |= GPIO_AFRH_AFSEL6_0 | GPIO_AFRH_AFSEL6_2; //SPI1_MISO
+	GPIOB->AFR[0] |= GPIO_AFRH_AFSEL7_0 | GPIO_AFRH_AFSEL7_2; //SPI1_MOSI (all are AF5)
 	
 }
 
@@ -75,11 +75,12 @@ void SPI1_Init(void){
 	SPI1->CR1 &= ~(SPI_CR1_CPOL); // clock low polarity
 	SPI1->CR1 &= ~(SPI_CR1_CPHA); //first clock phase is capture
 	SPI1->CR1 &= ~(SPI_CR1_BR); 
-	SPI1->CR1 |= SPI_CR1_BR_1; //Baud rate = f/8 [011] 2MHz, f = 24MHz, set Baud Rate to f/8 (2^3) = 3MHz
+	SPI1->CR1 |= SPI_CR1_BR_1; //Baud rate = f/8 [011] 3MHz, f = 24MHz, set Baud Rate to f/8 (2^3) = 3MHz
 	SPI1->CR1 &= ~(SPI_CR1_CRCEN); //hardware CRC disabled
 	SPI1->CR1 |= (SPI_CR1_MSTR); //MASTER mode
-	SPI1->CR1 |= (SPI_CR1_SSM); //enabling SSM
-	SPI1->CR2 |= SPI_CR2_NSSP; //enabling NSS pulse gen
+	SPI1->CR1 |= (SPI_CR1_SSM); //enabling Software Slave Managemeent
+	SPI1->CR1 |= SPI_CR1_SSI; //driving SSI to high
+	SPI1->CR2 &= ~(SPI_CR2_NSSP); //no NSS pulse gen btween  transfers
 	SPI1->CR2 |= SPI_CR2_FRXTH; //setting FIFO to 1/4
 	SPI1->CR1 |= SPI_CR1_SPE; //SPI enable
 
