@@ -1,6 +1,5 @@
 #include "SPI.h"
 
-
 void SPI2_GPIO_Init(void) {
 	//start GPIOB
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
