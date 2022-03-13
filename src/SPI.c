@@ -184,7 +184,7 @@ void SPI_Set_Off(SPI_TypeDef *SPIx) {
 }
 void SPI_LED_Reset(SPI_TypeDef *SPIx){
 	int i;
-	for(i = 0; i < 19){
+	for(i = 0; i < 19; i++){
 		while((SPIx->SR & SPI_SR_TXE) == 0);
 		*((volatile uint8_t*)&SPIx->DR) = 0;
 	}
