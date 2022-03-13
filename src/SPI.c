@@ -104,11 +104,12 @@ void SPI_Receive_Waveform(SPI_TypeDef *SPIx, uint16_t* read_data){
 	*((volatile uint8_t*)&SPIx->DR) = ; //write data to SPIx->DR
 } */
 
-//11011011 = 3 + 24 + 64 + 128 = 219
-//01101101 = 1 + 12 + 32 + 64 = 109
+//11011011 = 3 + 24 + 64 + 128 = 219 
+//01101101 = 1 + 12 + 32 + 64 = 109 
 //10110110 = 6 + 16 + 32 + 128 = 182
 void SPI_Set_Green(SPI_TypeDef *SPIx) {
 	int i;
+	//set  green to moderate value 
 	while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
 	*((volatile uint8_t*)&SPIx->DR) = 146; //write data to SPIx->DR
 	while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
@@ -135,6 +136,7 @@ void SPI_Set_Blue(SPI_TypeDef *SPIx) {
 		while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
 		*((volatile uint8_t*)&SPIx->DR) = 36; //write data to SPIx->DR
 	}
+	//set blue to moderate value
 	while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
 	*((volatile uint8_t*)&SPIx->DR) = 146; //write data to SPIx->DR
 	while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
@@ -151,7 +153,7 @@ void SPI_Set_Red(SPI_TypeDef *SPIx) {
 	*((volatile uint8_t*)&SPIx->DR) = 73; //write data to SPIx->DR
 	while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
 	*((volatile uint8_t*)&SPIx->DR) = 36; //write data to SPIx->DR
-	//set red to max
+	//set red to moderate value
 	while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
 	*((volatile uint8_t*)&SPIx->DR) = 146; //write data to SPIx->DR
 	while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
