@@ -51,7 +51,7 @@ void SPI2_Init(void){
 	SPI2->CR1 &= ~(SPI_CR1_CPOL); // clock low polarity
 	SPI2->CR1 &= ~(SPI_CR1_CPHA); //first clock phase is capture
 	SPI2->CR1 &= ~(SPI_CR1_BR); 
-	SPI2->CR1 |= SPI_CR1_BR_2//f = 24MHz -> set presc to 16/2^4 (100), giving us f = 1.5MHz
+	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1; //f = 24MHz -> set presc to 16/2^4 (100), giving us f = 1.5MHz
 	SPI2->CR1 &= ~(SPI_CR1_CRCEN); //hardware CRC disabled
 	SPI2->CR1 |= (SPI_CR1_MSTR); //MASTER mode
 	SPI2->CR1 |= (SPI_CR1_SSM); //enabling SSM
@@ -75,7 +75,7 @@ void SPI1_Init(void){
 	SPI1->CR1 &= ~(SPI_CR1_CPOL); // clock low polarity
 	SPI1->CR1 &= ~(SPI_CR1_CPHA); //first clock phase is capture
 	SPI1->CR1 &= ~(SPI_CR1_BR); 
-	SPI1->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1//Baud rate = f/8 [011] 2MHz, f = 24MHz, set Baud Rate to f/8 (2^3) = 3MHz
+	SPI1->CR1 |= SPI_CR1_BR_1; //Baud rate = f/8 [011] 2MHz, f = 24MHz, set Baud Rate to f/8 (2^3) = 3MHz
 	SPI1->CR1 &= ~(SPI_CR1_CRCEN); //hardware CRC disabled
 	SPI1->CR1 |= (SPI_CR1_MSTR); //MASTER mode
 	SPI1->CR1 |= (SPI_CR1_SSM); //enabling SSM
