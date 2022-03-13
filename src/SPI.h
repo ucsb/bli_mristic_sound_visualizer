@@ -8,8 +8,11 @@ void SPI1_GPIO_Init(void);
 void SPI2_Init(void);
 void SPI1_Init(void);
 void SPI_Receive_Waveform(SPI_TypeDef *SPIx, uint16_t* read_data);
-void SPI_Transmit_Color(SPI_TypeDef *SPIx, uint8_t g, uint8_t r, uint_8t b);
+//void SPI_Transmit_Color(SPI_TypeDef *SPIx, uint8_t g, uint8_t r, uint_8t b);
 void SPI_Set_Green(SPI_TypeDef *SPIx);
+void SPI_Set_Blue(SPI_TypeDef *SPIx);
+void SPI_Set_Red(SPI_TypeDef *SPIx);
 void SPI_Set_Off(SPI_TypeDef *SPIx);
+void SPI_LED_Reset(SPI_TypeDef *SPIx);
 
 #endif 

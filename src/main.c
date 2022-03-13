@@ -21,17 +21,19 @@ int main(void) {
 	SPI2_Init();
     SPI1_GPIO_Init();
     SPI1_Init();
-	int i = 0
+	int i = 0;
     int mag;
     //Note that the microphone's L/R pin should be connected to Vdd (3.3v)
 	while(1) { //sampling wave mag from mic]
-        i++;
-        if(i%4){
+        if(i%256){
+            SPI_LED_Reset(SPI1);
+        }else if(i%4){
             SPI_Set_Green(SPI1);
         }
         else {
             SPI_Set_Off(SPI1);
         }
+        i++;
         /*SPI_Receive_Waveform(SPI2, &receive);
         //decode receive to get magnitude value.
         mag = 0;
