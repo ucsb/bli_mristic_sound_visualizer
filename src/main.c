@@ -19,11 +19,20 @@ int main(void) {
 	
 	SPI2_GPIO_Init();
 	SPI2_Init();
-	int i;
+    SPI1_GPIO_Init();
+    SPI1_Init();
+	int i = 0
     int mag;
     //Note that the microphone's L/R pin should be connected to Vdd (3.3v)
 	while(1) { //sampling wave mag from mic]
-        SPI_Receive_Waveform(SPI2, &receive);
+        i++;
+        if(i%4){
+            SPI_Set_Green(SPI1);
+        }
+        else {
+            SPI_Set_Off(SPI1);
+        }
+        /*SPI_Receive_Waveform(SPI2, &receive);
         //decode receive to get magnitude value.
         mag = 0;
         for(i = 0; i < 16; i++){
@@ -37,5 +46,7 @@ int main(void) {
         *(a) = mag;
         //mag should now be equal to a value E [0,8]
         //we can have 0 not be displayed on the LED (lowest possible val), and 1-8 correspond to height of max LED
+        */
 	}
+
 }

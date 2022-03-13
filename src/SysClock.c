@@ -1,8 +1,8 @@
 #include "SysClock.h"
 
 void System_Clock_Init(void) {
-	RCC->CR |=  7UL<<4;
-	RCC->CR &= ~(1UL<<7 | 1UL<<4); // settig MSI to 4MHz
+	RCC->CR |= 9UL<<4;
+	RCC->CR &= ~(3UL << 5); //setting MSI to 24MHz
 	RCC->CR |= RCC_CR_MSION;  // enable  MSI
 	while((RCC->CR & RCC_CR_MSIRDY) == 0);
 	

@@ -119,3 +119,11 @@ void SPI_Set_Green(SPI_TypeDef *SPIx) {
 		*((volatile uint8_t*)&SPIx->DR) = 0; //write data to SPIx->DR
 	}
 }
+
+void SPI_Set_Off(SPI_TypeDef *SPIx) {
+	int i;
+	for(i = 0; i < 9; i++){
+		while((SPIx->SR & SPI_SR_TXE) == 0); //wait for transmit buffer empty flag to be set
+		*((volatile uint8_t*)&SPIx->DR) = 0; //write data to SPIx->DR
+	}
+}
