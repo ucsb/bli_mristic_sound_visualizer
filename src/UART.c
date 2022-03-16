@@ -90,7 +90,7 @@ void USART_Init(USART_TypeDef* USARTx) {
 	USARTx->CR2 &= ~USART_CR2_STOP;
 
 	//baud rate to 9600 (USARTDIV = 80MHz/9600 = 8333 (0x208D))
-	USARTx->BRR |= 0x208D;
+	USARTx->BRR |= 0x1A0;
 
 	//enable transmitter and receiver
 	USARTx->CR1 |= USART_CR1_TE | USART_CR1_RE;
@@ -117,7 +117,7 @@ void USART_Write(USART_TypeDef * USARTx, uint8_t *buffer, uint32_t nBytes) {
 		while (!(USARTx->ISR & USART_ISR_TXE));   	// wait until TXE (TX empty) bit is set
 		// Writing USART_DR automatically clears the TXE flag 	
 		USARTx->TDR = buffer[i] & 0xFF;
-		USART_Delay(300);
+		USART_Delay(600);
 	}
 	while (!(USARTx->ISR & USART_ISR_TC));   		  // wait until TC bit is set
 	USARTx->ISR &= ~USART_ISR_TC;
