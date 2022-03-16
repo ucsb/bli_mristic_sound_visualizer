@@ -8,14 +8,14 @@ This is the project website for Brian and Marko's ECE 153B Final Project. We hav
 
 ![Image](blockdiagram.jpeg)
 
-## Final Parts List
+## Final Parts List and Serial Protocols
 - STM32L476RG
-- Wii Nunchuck
-- I2C LCD1602A LCD Display: https://www.amazon.com/SunFounder-Serial-Module-Display-Arduino/dp/B019K5X53O/ref=asc_df_B019K5X53O/?tag=hyprod-20&linkCode=df0&hvadid=312760964359&hvpos=&hvnetw=g&hvrand=17714201577126984049&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9031645&hvtargid=pla-563014027379&psc=1
-- HC-SR04 Ultrasonic Sensor: https://www.sparkfun.com/products/15569
-- Wii Nunchuck Adapter: https://www.amazon.com/gp/product/B00RK1VKUQ/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1
+- Wii Nunchuck (I2C)
+- I2C LCD1602A LCD Display (I2C)
+- HC-SR04 Ultrasonic Sensor (PWM)
+- Termite (UART)
 
-## Video Demonstration
+## Video Demonstration (click the photo)
 
 [![Video Demonstration](http://img.youtube.com/vi/rPoylZ0QpGE/0.jpg)](http://www.youtube.com/watch?v=rPoylZ0QpGE "ECE153B Final Project")
 
