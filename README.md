@@ -17,7 +17,7 @@ This is the project website for Brian and Marko's ECE 153B Final Project. We hav
 
 ## Video Demonstration
 
-{% include youtubePlayer.html %}
+[![Video Demonstration](http://img.youtube.com/vi/rPoylZ0QpGE/0.jpg)](http://www.youtube.com/watch?v=rPoylZ0QpGE "ECE153B Final Project")
 
 
 ## Weekly Updates
