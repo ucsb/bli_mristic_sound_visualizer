@@ -1,5 +1,26 @@
-# Project Website & Repo for Brian Li & Marko Ristic's sound visualizer
+# Project Website & Repo for Brian Li & Marko Ristic's Backup Camera Aid
 
+## Introduction
+
+This is the project website for Brian and Marko's ECE 153B Final Project. We have created a Backup Camera Aid using an ultrasonic distance sensor, LCD display, Wii Nunchuck, and the Termite terminal. The project uses the Nunchuck to control the state of our processor, simulating the gear selector on a car. If we are in the right state of reversing the "car," the LCD will output a visual representation of the distance measured from the ultrasonic sensor, similar to how a car will display warning lights on its monitor when the car is too close to an object when reversing. We will also send a warning signal to the Termite terminal to simulate how a car could send a warning to the dashboard or the monitor. 
+
+## Block Diagram
+
+![Image](blockdiagram.jpeg)
+
+## Final Parts List
+- STM32L476RG
+- Wii Nunchuck
+- I2C LCD1602A LCD Display: https://www.amazon.com/SunFounder-Serial-Module-Display-Arduino/dp/B019K5X53O/ref=asc_df_B019K5X53O/?tag=hyprod-20&linkCode=df0&hvadid=312760964359&hvpos=&hvnetw=g&hvrand=17714201577126984049&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9031645&hvtargid=pla-563014027379&psc=1
+- HC-SR04 Ultrasonic Sensor: https://www.sparkfun.com/products/15569
+- Wii Nunchuck Adapter: https://www.amazon.com/gp/product/B00RK1VKUQ/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1
+
+## Video Demonstration
+
+{% include youtubePlayer.html %}
+
+
+## Weekly Updates
 Project updates will be posted every week
 
 ##  Week 1
@@ -34,3 +55,4 @@ Protocols/Peripheral Devices:
 * PWM: Ultrasonic Distance Sensor
 
 We implemented writing to the LCD Display this week, and pulled our ultrasonic code from a previous lab to correctly measure the distance from the sensor. We then added state code which was controlled by the pressing the c-button on the Nunchuk, and implemented a conversion from the distance received by the sensor to a displayable index on our LCD screen. 
+
