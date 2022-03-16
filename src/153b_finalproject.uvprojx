@@ -389,16 +389,6 @@
               <FilePath>.\main.c</FilePath>
             </File>
             <File>
-              <FileName>SPI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\SPI.c</FilePath>
-            </File>
-            <File>
-              <FileName>SPI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\SPI.h</FilePath>
-            </File>
-            <File>
               <FileName>startup_stm32l476xx.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\startup_stm32l476xx.s</FilePath>
@@ -429,16 +419,6 @@
               <FilePath>.\UART.h</FilePath>
             </File>
             <File>
-              <FileName>LED.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\LED.c</FilePath>
-            </File>
-            <File>
-              <FileName>LED.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LED.h</FilePath>
-            </File>
-            <File>
               <FileName>UART_printf.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\UART_printf.c</FilePath>
@@ -452,6 +432,16 @@
               <FileName>I2C.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\I2C.h</FilePath>
+            </File>
+            <File>
+              <FileName>SysTimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SysTimer.c</FilePath>
+            </File>
+            <File>
+              <FileName>SysTimer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\SysTimer.h</FilePath>
             </File>
           </Files>
         </Group>

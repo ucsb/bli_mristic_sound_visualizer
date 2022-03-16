@@ -16,7 +16,7 @@ void SysTick_Init(void) {
 	
 	// SysTick	 Reload Value Register
 	SysTick->LOAD = 3999; // Enter the correct LOAD value that will give us a 1 ms period
-						  // 1 ms = (load + 1) * (1/(8/8)MHz)
+						  // 1 ms = (load + 1) * (1/(4)MHz)
 	
 	// SysTick Current Value Register
 	SysTick->VAL = 0;

@@ -151,14 +151,10 @@ int main(void) {
 	int i;
 	uint8_t SlaveAddress_Nunchuk, SlaveAddress_Display;
 	uint8_t Wii_Data_Receive[6] = {0};
-	uint8_t Wii_Data_Send1[2] = {0xF0, 0x55};
-	uint8_t Wii_Data_Send2[2] = {0xFB, 0x00};
 	uint8_t Wii_init_send = 0x00;
 	int8_t send_error;
 	int8_t receive_error;
 	
-	uint8_t* pdata1 = Wii_Data_Send1;
-	uint8_t* pdata2 = Wii_Data_Send2;
 	uint8_t* preceive = Wii_Data_Receive;
 	SlaveAddress_Nunchuk = (0x52 << 1);
 	SlaveAddress_Display = (0x27 << 1);
@@ -173,7 +169,7 @@ int main(void) {
 	I2C2_GPIO_Init();
 	I2C2_Initialization();
 	
-	// Initialize UART 
+	// Initialize UART for Termite
 	Init_USARTx(2);
 	
 	// Initialize Ultrasonic Sensor
@@ -185,8 +181,7 @@ int main(void) {
 	delay(10);
 	
 	//Initialize Nunchuk
-	send_error = I2C_SendData(I2C1, SlaveAddress_Nunchuk, pdata1, 2);
-	send_error = I2C_SendData(I2C1, SlaveAddress_Nunchuk, pdata2, 2);
+	Nunchuk_Init(I2C1, SlaveAddress_Nunchuk);
 	
 	while(1) {
 		if(state == 0){ //starting screen
@@ -195,77 +190,67 @@ int main(void) {
 				delay(1);
 				LCD_Put_Cur(I2C2, SlaveAddress_Display, 0, 0);
 				delay(1);
-				LCD_Send_String(I2C2, SlaveAddress_Display, "Welcome");
+				LCD_Send_String(I2C2, SlaveAddress_Display, "Back Up Sensor");
 				delay(1);
 				LCD_Put_Cur(I2C2, SlaveAddress_Display, 1, 0);
 				delay(1);
 				LCD_Send_String(I2C2, SlaveAddress_Display, "Press C to Start");
 				delay(1);
+
 				displayed = 1;
 			}
 			
+			//poll for Nunchuk inputs
 			send_error = I2C_SendData(I2C1, SlaveAddress_Nunchuk, &Wii_init_send, 1);
 			delay(10);
 			receive_error = I2C_ReceiveData(I2C1, SlaveAddress_Nunchuk, preceive, 6);
-			//printf("preceive[5] %x\n", preceive[5]);
-			if((preceive[5] & 0x02) == 0){
+
+			if((preceive[5] & 0x02) == 0){ //if C button pressed, switch states
 				state = 1;
 				displayed = 0;
 			}
-			delay(300);
+			delay(300); //needed so state doesn't continuously flip back and forth
 			
-		} else{ //actual polling
-			//if(displayed == 0){
-			//	LCD_Clear(I2C2, SlaveAddress_Display);
-			//	displayed = 1;
-			//}
-			
+		} else{ //Distance Display Code
 			LCD_Clear(I2C2, SlaveAddress_Display);
+
+			//Poll for Ultrasonic Sensor Measurement
 			if(timeInterval > 25000){
 				dist = 0x00;
 			}
 			time4 = TIM4->CNT;
 			time1 = TIM1->CNT;
 			dist = (timeInterval)/58;
+
+			//Calculate Output Index
 			tempdist = 15 - ((dist - 2)*16/100);
-			if(tempdist > 14){
+			if(tempdist > 12){
 				printf("Too close! Drive forward!\n");
 			}
 			for(i = 0; i < tempdist; i++){
 				LCD_Put_Cur(I2C2, SlaveAddress_Display, 0, i);
 				delay(1);
 				LCD_Send_Data(I2C2, SlaveAddress_Display, 0xFF);
-				delay(25);
+				delay(10);
 				LCD_Put_Cur(I2C2, SlaveAddress_Display, 1, i);
 				delay(1);
 				LCD_Send_Data(I2C2, SlaveAddress_Display, 0xFF);
-				delay(25);
+				delay(10);
 				
 			}
-		//printf("timeInterval %i\n", timeInterval);
-		//printf("dist: %i\n", dist);
 			
+			//poll for Nunchuk inputs
 			send_error = I2C_SendData(I2C1, SlaveAddress_Nunchuk, &Wii_init_send, 1);
 			delay(10);
 			receive_error = I2C_ReceiveData(I2C1, SlaveAddress_Nunchuk, preceive, 6);
-			//printf("preceive[5] %x\n", preceive[5]);
-			if((preceive[5] & 0x02) == 0){
+			
+			if((preceive[5] & 0x02) == 0){ //if C button pressed, switch states
 				state = 0;
 				displayed = 0;
 			}
 			delay(300);
 		}
-		
-		//poll for C press
-		 
-
-		 //for(i = 0; i < 6; i++){
-		 //	printf("0x0%i: %x\n", i, Wii_Data_Receive[i]);
-		 //}
-		 
-		 // [TODO] Store your measurements on Stack
-		
-		
+	
 		for(i = 0; i < 1000; ++i); 
 	}
 }

@@ -19,6 +19,8 @@ void I2C2_GPIO_Init(void);
 void I2C2_Initialization(void);
 void CODEC_Initialization(void);
 
+void Nunchuk_Init(I2C_TypeDef * I2Cx, uint8_t DeviceAddress);
+
 void LCD_Send_Command(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, char cmd);
 void LCD_Send_Data(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, char cmd);
 void LCD_Init(I2C_TypeDef * I2Cx, uint8_t DeviceAddress);

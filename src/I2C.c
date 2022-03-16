@@ -17,7 +17,6 @@ extern void Error_Handler(void);
 //                        I2C GPIO Initialization
 //===============================================================================
 void I2C1_GPIO_Init(void) {
-	// [TODO]
 	//enable GPIOB
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
 	
@@ -27,7 +26,7 @@ void I2C1_GPIO_Init(void) {
 	GPIOB->MODER &= ~GPIO_MODER_MODE7;	
 	GPIOB->MODER |= GPIO_MODER_MODE7_1;
 	
-	//use alternate functions for PB6, PB7 (AF4) for USART2
+	//use alternate functions for PB8, PB7 (AF4) for I2C1
 	GPIOB->AFR[1] |= GPIO_AFRH_AFSEL8_2;
 	GPIOB->AFR[0] |= GPIO_AFRL_AFSEL7_2;
 
@@ -43,7 +42,6 @@ void I2C1_GPIO_Init(void) {
 }
 
 void I2C2_GPIO_Init(void) {
-	// [TODO]
 	//enable GPIOB
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
 	
@@ -53,7 +51,7 @@ void I2C2_GPIO_Init(void) {
 	GPIOB->MODER &= ~GPIO_MODER_MODE11;	
 	GPIOB->MODER |= GPIO_MODER_MODE11_1;
 	
-	//use alternate functions for PB10, PB11 (AF4) for USART2
+	//use alternate functions for PB10, PB11 (AF4) for I2C2
 	GPIOB->AFR[1] |= GPIO_AFRH_AFSEL10_2;
 	GPIOB->AFR[1] |= GPIO_AFRH_AFSEL11_2;
 
@@ -123,16 +121,12 @@ void I2C1_Initialization(void){
 	I2C1->TIMINGR &= ~I2C_TIMINGR_SCLL;
 
 	//set timing
-	I2C1->TIMINGR |= (7 << I2C_TIMINGR_PRESC_POS);   //PRESC set to 7, period tPRESC is 0.1us
-	I2C1->TIMINGR |= (15 << I2C_TIMINGR_SCLDEL_POS);  //SCLDEL set to 10, originally 
-	I2C1->TIMINGR |= (15 << I2C_TIMINGR_SDADEL_POS);  //SDADEL set to 12, originally  
-	I2C1->TIMINGR |= (5 << I2C_TIMINGR_SCLH_POS);    //SCLH set to 39  , originally   
-	I2C1->TIMINGR |= (5 << I2C_TIMINGR_SCLL_POS);    //SCLL set to 46  , originally    
-	// 15
-	// 15
-	// 15
-	// 5?
-	// 5?
+	I2C1->TIMINGR |= (7 << I2C_TIMINGR_PRESC_POS);   //PRESC set to 7, period tPRESC is 0.1us  15
+	I2C1->TIMINGR |= (15 << I2C_TIMINGR_SCLDEL_POS);  //SCLDEL set to 10, originally 15
+	I2C1->TIMINGR |= (15 << I2C_TIMINGR_SDADEL_POS);  //SDADEL set to 12, originally  15
+	I2C1->TIMINGR |= (5 << I2C_TIMINGR_SCLH_POS);    //SCLH set to 39  , originally   5?
+	I2C1->TIMINGR |= (5 << I2C_TIMINGR_SCLL_POS);    //SCLL set to 46  , originally    5?
+
 	//set own addr
 	I2C1->OAR1 &= ~(I2C_OAR1_OA1EN);
 	I2C1->OAR2 &= ~(I2C_OAR2_OA2EN);
@@ -196,11 +190,7 @@ void I2C2_Initialization(void){
 	I2C2->TIMINGR |= (0 << I2C_TIMINGR_SDADEL_POS);  //SDADEL set to 12, originally  
 	I2C2->TIMINGR |= (10 << I2C_TIMINGR_SCLH_POS);    //SCLH set to 39  , originally   
 	I2C2->TIMINGR |= (10 << I2C_TIMINGR_SCLL_POS);    //SCLL set to 46  , originally    
-	// 15
-	// 15
-	// 15
-	// 5?
-	// 5?
+	
 	//set own addr
 	I2C2->OAR1 &= ~(I2C_OAR1_OA1EN);
 	I2C2->OAR2 &= ~(I2C_OAR2_OA2EN);
@@ -270,7 +260,7 @@ void I2C_WaitLineIdle(I2C_TypeDef * I2Cx){
 //                           I2C Send Data
 //=============================================================================== 
 int8_t I2C_SendData(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, uint8_t *pData, uint8_t Size) {
-	int i,j;
+	int i;
 	
 	if (Size <= 0 || pData == NULL) return -1;
 	
@@ -292,12 +282,8 @@ int8_t I2C_SendData(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, uint8_t *pData, u
 		// transmitted must be written in the I2C_TXDR register. It is cleared when the next data to be
 		// sent is written in the I2C_TXDR register.
 		// The TXIS flag is not set when a NACK is received.
-		//printf("foo%i\n", i);
-		//for(j = 0; j < 800; j++);
 		while((I2Cx->ISR & I2C_ISR_TXIS) == 0 );
-		//printf("foo%i\n", i);
 		I2Cx->TXDR = pData[i] & I2C_TXDR_TXDATA;  // TXE is cleared by writing to the TXDR register.
-		//printf("foo%i\n", i);
 	}
 	
 	// Wait until TC flag is set 
@@ -336,8 +322,21 @@ int8_t I2C_ReceiveData(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, uint8_t *pData
 	return 0;
 }
 
+void Nunchuk_Init(I2C_TypeDef * I2Cx, uint8_t DeviceAddress){
+	uint8_t Wii_Data_Send1[2] = {0xF0, 0x55};
+	uint8_t Wii_Data_Send2[2] = {0xFB, 0x00};
+	int8_t send_error;
+	
+	uint8_t* pdata1 = Wii_Data_Send1;
+	uint8_t* pdata2 = Wii_Data_Send2;
+
+	send_error = I2C_SendData(I2Cx, DeviceAddress, pdata1, 2);
+	send_error = I2C_SendData(I2Cx, DeviceAddress, pdata2, 2);
+}
+
+// LCD Drivers adapted from https://controllerstech.com/i2c-lcd-in-stm32/
+
 void LCD_Init(I2C_TypeDef * I2Cx, uint8_t DeviceAddress){
-	int i;
 	// 4 bit initialisation
 	delay(50); // wait for >40ms
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x30);
@@ -346,25 +345,18 @@ void LCD_Init(I2C_TypeDef * I2Cx, uint8_t DeviceAddress){
 	delay(1);  // wait for >100us
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x30);
 	delay(15); // wait for >10ms
-	//HAL_Delay(10);
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x20);  // 4bit mode
 	delay(15); // wait for >10ms
-	//HAL_Delay(10);
 
-  // dislay initialisation
+  	// display initialisation
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x28); // Function set --> DL=0 (4 bit mode), N = 1 (2 line display) F = 0 (5x8 characters)
 	delay(1);
-	//HAL_Delay(1);
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x08); //Display on/off control --> D=0,C=0, B=0  ---> display off
 	delay(1);
-	//HAL_Delay(1);
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x01);  // clear display
 	delay(2);
-	//HAL_Delay(1);
-	//HAL_Delay(1);
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x06); //Entry mode set --> I/D = 1 (increment cursor) & S = 0 (no shift)
 	delay(1);
-	//HAL_Delay(1);
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x0C); //Display on/off control --> D = 1, C and B = 0. (Cursor and blink, last two bits)
 }
 
@@ -378,7 +370,6 @@ void LCD_Send_Command(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, char cmd){
 	data_t[2] = data_l|0x0C;  //en=1, rs=0
 	data_t[3] = data_l|0x08;  //en=0, rs=0
 	I2C_SendData(I2Cx, DeviceAddress, (uint8_t *) data_t, 4);
-	//for(int i = 0; i < 500000; i++);
 }
 
 void LCD_Send_Data(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, char data){
@@ -395,9 +386,7 @@ void LCD_Send_Data(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, char data){
 
 void LCD_Send_String(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, char *str)
 {
-	//LCD_Send_Command(I2Cx, DeviceAddress, 0x80);
-	//delay(500);
-	while (*str) {LCD_Send_Data (I2Cx, DeviceAddress, *str++); delay(50);}
+	while (*str) {LCD_Send_Data (I2Cx, DeviceAddress, *str++); delay(25);}
 }
 
 void LCD_Clear (I2C_TypeDef * I2Cx, uint8_t DeviceAddress)
@@ -405,7 +394,6 @@ void LCD_Clear (I2C_TypeDef * I2Cx, uint8_t DeviceAddress)
 	LCD_Send_Command(I2Cx, DeviceAddress, 0x80);
 	for (int i=0; i<70; i++)
 	{
-		//delay(1000);
 		LCD_Send_Data(I2Cx, DeviceAddress, ' ');
 	}
 }
@@ -424,5 +412,3 @@ void LCD_Put_Cur(I2C_TypeDef * I2Cx, uint8_t DeviceAddress, int row, int col)
 
     LCD_Send_Command(I2Cx, DeviceAddress, col);
 }
-//from https://controllerstech.com/i2c-lcd-in-stm32/
-
