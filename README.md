@@ -31,6 +31,6 @@ Unfortunately, we were unable to correctly interface with our 8x32 LED board usi
 Protocols/Peripheral Devices:
 * I2C: LCD Display & Nintendo Nunchuk,
 * UART: Termite Display
-* PDM: Ultrasonic Distance Sensor
+* PWM: Ultrasonic Distance Sensor
 
 We implemented writing to the LCD Display this week, and pulled our ultrasonic code from a previous lab to correctly measure the distance from the sensor. We then added state code which was controlled by the pressing the c-button on the Nunchuk, and implemented a conversion from the distance received by the sensor to a displayable index on our LCD screen. 
