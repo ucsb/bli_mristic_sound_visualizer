@@ -69,6 +69,7 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
+;******************** Added by Dr. Zhu *****************************************************
                 ; ROM:  Symbols defined by the linker
                 IMPORT  |Load$$ER_IROM1$$Base|             ; Entry of Bootloader
                 
@@ -101,6 +102,7 @@
                 IMPORT  |Image$$RW_IRAM1$$ZI$$Base|       ; Start of ZI output section
                 IMPORT  |Image$$RW_IRAM1$$ZI$$Limit|      ; End of ZI output section
                 IMPORT  |Image$$RW_IRAM1$$ZI$$Length|     ; Size of ZI output section
+;******************** END ************************************************************************
 
 
 Stack_Size      EQU     0x400;

@@ -1,18 +1,6 @@
 #include "UART.h"
 
-void UART1_Init(void) {
-	// [TODO]
-	
-	//enable USART1 clk
-	RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
-
-	//select system clk as USART1 clk source (01)
-	RCC->CCIPR |= RCC_CCIPR_USART1SEL_0;
-}
-
 void UART2_Init(void) {
-	// [TODO]
-
 	//enable USART2 clk
 	RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
 
@@ -20,36 +8,7 @@ void UART2_Init(void) {
 	RCC->CCIPR |= RCC_CCIPR_USART2SEL_0;
 }
 
-void UART1_GPIO_Init(void) {
-	// [TODO]
-	
-	//enable GPIOB
-	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
-	
-	//set mode to alternate
-	GPIOB->MODER &= ~GPIO_MODER_MODE6;	
-	GPIOB->MODER |= GPIO_MODER_MODE6_1;
-	GPIOB->MODER &= ~GPIO_MODER_MODE7;	
-	GPIOB->MODER |= GPIO_MODER_MODE7_1;
-	
-	//use alternate functions for PB6, PB7 (AF7) for USART2
-	GPIOB->AFR[0] |= GPIO_AFRL_AFSEL6_0 | GPIO_AFRL_AFSEL6_1 | GPIO_AFRL_AFSEL6_2;
-	GPIOB->AFR[0] |= GPIO_AFRL_AFSEL7_0 | GPIO_AFRL_AFSEL7_1 | GPIO_AFRL_AFSEL7_2;
-
-	//set speeds to very high
-	GPIOB->OSPEEDR |= GPIO_OSPEEDR_OSPEED6 | GPIO_OSPEEDR_OSPEED7;
-
-	//set to push pull output type
-	GPIOB->OTYPER &= ~GPIO_OTYPER_OT6;
-	GPIOB->OTYPER &= ~GPIO_OTYPER_OT7;
-
-	//set to pull-up register (01)
-	GPIOB->PUPDR |= GPIO_PUPDR_PUPD6_0 | GPIO_PUPDR_PUPD7_0;
-}
-
 void UART2_GPIO_Init(void) {
-	// [TODO]
-	
 	//enable GPIOA
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 	
@@ -89,8 +48,8 @@ void USART_Init(USART_TypeDef* USARTx) {
 	//stop bits to 1
 	USARTx->CR2 &= ~USART_CR2_STOP;
 
-	//baud rate to 9600 (USARTDIV = 80MHz/9600 = 8333 (0x208D))
-	USARTx->BRR |= 0x208D;
+	//baud rate to 9600 (USARTDIV = 4MHz/9600 = 416.6 (0x1A0))
+	USARTx->BRR |= 0x1A0;
 
 	//enable transmitter and receiver
 	USARTx->CR1 |= USART_CR1_TE | USART_CR1_RE;
@@ -117,7 +76,7 @@ void USART_Write(USART_TypeDef * USARTx, uint8_t *buffer, uint32_t nBytes) {
 		while (!(USARTx->ISR & USART_ISR_TXE));   	// wait until TXE (TX empty) bit is set
 		// Writing USART_DR automatically clears the TXE flag 	
 		USARTx->TDR = buffer[i] & 0xFF;
-		USART_Delay(300);
+		USART_Delay(600);
 	}
 	while (!(USARTx->ISR & USART_ISR_TC));   		  // wait until TC bit is set
 	USARTx->ISR &= ~USART_ISR_TC;
